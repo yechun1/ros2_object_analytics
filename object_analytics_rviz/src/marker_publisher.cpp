@@ -25,19 +25,15 @@
 #include <memory>
 #include <math.h>
 
-#include "object_analytics_msgs/msg/tracked_objects.hpp"
 #include "object_analytics_msgs/msg/objects_in_boxes3_d.hpp"
-#include "object_analytics_msgs/msg/tracked_object.hpp"
 #include "object_analytics_msgs/msg/moving_objects_in_frame.hpp"
 #include <object_analytics_msgs/msg/moving_object.hpp>
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
 
-using TrackingMsg = object_analytics_msgs::msg::TrackedObjects;
 using LocalizationMsg = object_analytics_msgs::msg::ObjectsInBoxes3D;
 using MovementMsg = object_analytics_msgs::msg::MovingObjectsInFrame;
-using TrackingObjectInBox = object_analytics_msgs::msg::TrackedObject;
 using LocalizationObjectInBox = object_analytics_msgs::msg::ObjectInBox3D;
 using MovementObjectInBox = object_analytics_msgs::msg::MovingObject;
 
@@ -72,7 +68,6 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Subscription<LocalizationMsg>::SharedPtr loc_marker_subscription_;
   rclcpp::Subscription<LocalizationMsg>::SharedPtr loc_performance_subscription_;
-  rclcpp::Subscription<TrackingMsg>::SharedPtr tra_subscription_;
   rclcpp::Subscription<MovementMsg>::SharedPtr mov_subscription_;
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
 
@@ -86,7 +81,6 @@ private:
     const LocalizationMsg::SharedPtr loc)
   {
     if (loc->objects_in_boxes.size() != 0) {
-      std::vector<TrackingObjectInBox> objects_tracked;
       std::vector<LocalizationObjectInBox> objects_localized;
       std_msgs::msg::Header header = loc->header;
       objects_localized = loc->objects_in_boxes;
@@ -431,39 +425,6 @@ private:
     }
   }
 
-  /* tracking callback for performance test */
-  void tra_callback(const TrackingMsg::SharedPtr msg)
-  {
-    struct timespec time_start = {0, 0};
-    clock_gettime(CLOCK_REALTIME, &time_start);
-    static double last_sec = 0;
-    static double last_nsec = 0;
-    static int count = 0;
-    double interval = 0;
-    double current_sec = time_start.tv_sec;
-    double current_nsec = time_start.tv_nsec;
-    double msg_sec = msg->header.stamp.sec;
-    double msg_nsec = msg->header.stamp.nanosec;
-
-    count++;
-    interval = (current_sec - last_sec) + ((current_nsec - last_nsec) / 1000000000);
-    if (last_sec == 0) {
-      last_sec = current_sec;
-      last_nsec = current_nsec;
-      return;
-    }
-
-    if (interval >= 1.0) {
-      double latency = (current_sec - msg_sec) + ((current_nsec - msg_nsec) / 1000000000);
-      double fps = count / interval;
-      count = 0;
-      last_sec = current_sec;
-      last_nsec = current_nsec;
-      RCLCPP_DEBUG(this->get_logger(), "T: fps %.3f hz, latency %.3f sec", fps, latency);
-      tra_fps_ = fps;
-      tra_latency_ = latency;
-    }
-  }
 };
 
 int main(int argc, char * argv[])

@@ -56,12 +56,9 @@ def generate_launch_description():
         # object_analytics_node
         launch_ros.actions.Node(
             package='object_analytics_node', node_executable='object_analytics_node',
-            output='screen',
-            arguments=['--tracking', '--localization']),
+            output='screen', arguments=['--localization']),
 
         # object_analytics_rviz
-        launch_ros.actions.Node(
-            package='object_analytics_rviz', node_executable='image_publisher', output='screen'),
         launch_ros.actions.Node(
             package='object_analytics_rviz', node_executable='marker_publisher', output='screen'),
 

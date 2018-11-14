@@ -32,7 +32,6 @@ public:
   static const char kTopicSegmentation[]; /**< Topic name of segmenter node's output message*/
   static const char kTopicDetection[];    /**< Topic name of 2d detection's output message */
   static const char kTopicLocalization[]; /**< Topic name of merger node's output message */
-  static const char kTopicTracking[];     /**< Topic name of tracker node's output message */
   static const char kTopicMoving[];       /**< Topic name of movment node's output message */
 };
 }  // namespace object_analytics_node

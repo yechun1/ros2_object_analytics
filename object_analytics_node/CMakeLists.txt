@@ -100,24 +100,6 @@ ament_target_dependencies(object_analytics_node
 )
 target_link_libraries(object_analytics_node object_analytics_common)
 
-add_executable(tracker_regression src/tracker/tracking_regression.cpp
-  src/dataset/tr_dataset.cpp
-  src/dataset/trimg_dataset.cpp
-  src/dataset/trvid_dataset.cpp)
-target_link_libraries(tracker_regression ament_index_cpp::ament_index_cpp)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  target_link_libraries(tracker_regression "stdc++fs")
-endif()
-ament_target_dependencies(tracker_regression
-  "object_analytics_msgs"
-  "cv_bridge"
-  "OpenCV"
-  "object_msgs"
-  "class_loader"
-  "rclcpp"
-  "rcutils"
-)
-target_link_libraries(tracker_regression object_analytics_common tracking_component)
 
 add_library(splitter_component SHARED
   src/splitter/splitter_node.cpp
@@ -163,28 +145,6 @@ rclcpp_register_node_plugins(moving_component "object_analytics_node::movement::
 set(node_plugins
   "${node_plugins}object_analytics_node::movement::MovementNode;$<TARGET_FILE:moving_component>\n")
 
-add_library(tracking_component SHARED
-  src/tracker/tracking_node.cpp
-  src/tracker/tracking.cpp
-  src/tracker/tracking_manager.cpp
-)
-target_compile_definitions(tracking_component
-  PRIVATE "OBJECT_ANALYTICS_NODE_BUILDING_DLL"
-)
-ament_target_dependencies(tracking_component
-  "class_loader"
-  "rclcpp"
-  "sensor_msgs"
-  "cv_bridge"
-  "OpenCV"
-  "object_msgs"
-  "object_analytics_msgs"
-)
-target_link_libraries(tracking_component object_analytics_common)
-rclcpp_register_node_plugins(tracking_component "object_analytics_node::tracker::TrackingNode")
-set(node_plugins
-  "${node_plugins}object_analytics_node::tracker::TrackingNode;$<TARGET_FILE:tracking_component>\n")
-
 add_library(segmenter_component SHARED
   src/segmenter/segmenter_node.cpp
   src/segmenter/segmenter.cpp
@@ -221,14 +181,8 @@ install(TARGETS
 )
 
 install(TARGETS
-  tracker_regression
-  DESTINATION lib/${PROJECT_NAME}
-)
-
-install(TARGETS
   object_analytics_common
   segmenter_component
-  tracking_component
   moving_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
