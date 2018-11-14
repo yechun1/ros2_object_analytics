@@ -22,36 +22,36 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    movidius_ncs_stream = 'movidius_ncs_stream'
-    movidius_ncs_stream_plugin = 'movidius_ncs_stream::NCSComposition'
-    depth_image_proc = 'depth_image_proc'
-    depth_image_proc_plugin = 'depth_image_proc::PointCloudXyzrgbNode'
+#    movidius_ncs_stream = 'movidius_ncs_stream'
+#    movidius_ncs_stream_plugin = 'movidius_ncs_stream::NCSComposition'
+#    depth_image_proc = 'depth_image_proc'
+#    depth_image_proc_plugin = 'depth_image_proc::PointCloudXyzrgbNode'
     default_rviz = os.path.join(get_package_share_directory('object_analytics_node'),
                                 'launch', 'rviz/default.rviz')
     return LaunchDescription([
-        # Realsense
-        launch_ros.actions.Node(
-            package='realsense_ros2_camera', node_executable='realsense_ros2_camera',
-            output='screen'),
-
-        # api_composition
-        launch_ros.actions.Node(
-            package='composition', node_executable='api_composition', output='screen',
-            remappings=[('rgb/camera_info', '/camera/color/camera_info'),
-                        ('rgb/image_rect_color', '/camera/color/image_raw'),
-                        ('depth_registered/image_rect',
-                         '/camera/aligned_depth_to_color/image_raw'),
-                        ('points', '/camera/depth_registered/points')]),
-
-        # api_composition_cli - depth_image_proc
-        launch_ros.actions.Node(
-            package='composition', node_executable='api_composition_cli', output='screen',
-            arguments=[depth_image_proc, depth_image_proc_plugin]),
-
-        # api_composition_cli - movidius_ncs_stream
-        launch_ros.actions.Node(
-            package='composition', node_executable='api_composition_cli', output='screen',
-            arguments=[movidius_ncs_stream, movidius_ncs_stream_plugin]),
+#        # Realsense
+#        launch_ros.actions.Node(
+#            package='realsense_ros2_camera', node_executable='realsense_ros2_camera',
+#            output='screen'),
+#
+#        # api_composition
+#        launch_ros.actions.Node(
+#            package='composition', node_executable='api_composition', output='screen',
+#            remappings=[('rgb/camera_info', '/camera/color/camera_info'),
+#                        ('rgb/image_rect_color', '/camera/color/image_raw'),
+#                        ('depth_registered/image_rect',
+#                         '/camera/aligned_depth_to_color/image_raw'),
+#                        ('points', '/camera/depth_registered/points')]),
+#
+#        # api_composition_cli - depth_image_proc
+#        launch_ros.actions.Node(
+#            package='composition', node_executable='api_composition_cli', output='screen',
+#            arguments=[depth_image_proc, depth_image_proc_plugin]),
+#
+#        # api_composition_cli - movidius_ncs_stream
+#        launch_ros.actions.Node(
+#            package='composition', node_executable='api_composition_cli', output='screen',
+#            arguments=[movidius_ncs_stream, movidius_ncs_stream_plugin]),
 
         # object_analytics_node
         launch_ros.actions.Node(
